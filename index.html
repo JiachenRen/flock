@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting...</title>
+    <script type="text/javascript">
+        const supported = ["zh", "zh-hk", "zh-sg", "zh-tw", "zh-cn"];
+        const url = "http://www.jiachenren.com/simulations/flock-animation/";
+        if (supported.indexOf(navigator.language) > -1)
+            window.location.replace(url + "zh");
+        else window.location.replace(url + "en");
+    </script>
+</head>
+</html>

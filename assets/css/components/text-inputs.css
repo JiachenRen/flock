@@ -1,0 +1,14 @@
+input[type="text"] {
+    padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: solid 1px rgba(170, 121, 252, 0.54);
+    transition: box-shadow 0.3s, border 0.3s;
+    border-radius: 5px;
+}
+
+input[type="text"]:focus {
+    border: solid 1px #aa79fc;
+    box-shadow: 0 0 5px 1px #cf4afc;
+    outline: none;
+}

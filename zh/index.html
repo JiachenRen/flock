@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>群落模拟器</title>
+    <link rel="stylesheet" href="../assets/css/site.css">
+    <link rel="stylesheet" href="../assets/css/components/sliders.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/scripts/droid.js"></script>
+    <script type="text/javascript" src="../../../dev/libs/vec2d.js"></script>
+    <script type="text/javascript" src="../../../dev/libs/utils.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<h1>欢迎访问嘉辰设计的群落模拟器<a href="../en">英文版</a></h1>
+<h2>
+    <span id="show_controls" class="show">自定义</span>
+    <span id="hide_controls" class="hide">隐藏自定义</span>
+    <span id="show_additional" class="show">更多设定</span>
+    <span id="hide_additional" class="hide">返回</span>
+    <span id="show_actions" class="show">控制</span>
+    <span id="hide_actions" class="hide">隐藏控制</span>
+    <span id="controls" class="controls">
+        <button id="force" class="btn">力量</button>
+        <button id="size" class="btn">大小</button>
+        <button id="style" class="btn">样式</button>
+    </span>
+    <span id="additional" class="controls">
+        <button id="tail" class="btn">尾巴</button>
+        <button id="connection" class="btn">链接</button>
+        <button id="graphics" class="btn">图像处理</button>
+    </span>
+    <span id="actions" class="controls">
+        <button id="simulation" class="btn">全盘控制</button>
+        <!--TODO: implement with php requests-->
+        <button id="presets" class="btn">模版</button>
+    </span>
+</h2>
+<div id="presets-controls" class="controls-block">
+    <hr>
+    <label for="preset_entry"><span class="controls-label">查找自定义设置: </span></label><br>
+    <input type="text" id="preset_entry" placeholder="输入文件名" required>
+    <br>
+    <span class="controls-label">结果: </span>
+    <div id="suggestions"></div>
+    <br>
+    <hr>
+    <label for="name"><span class="controls-label">保存自定义: </span></label><br>
+    <input type="text" id="name" placeholder="file name" required><br>
+    <span class="controls-label">当前状态: </span><span id="sql_fb">未保存</span>
+</div>
+<div id="simulation-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>数量: </span><span id="numDroids_fb"></span></span>
+        <input type="range" id="numDroids" min="0" max="300" step="1">
+    </label>
+    <p><span class="controls-action" id="clear">清屏</span></p>
+    <p><span class="controls-action" id="re_spawn">重新开始</span></p>
+</div>
+<div id="connection-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>数量: </span><span id="maxNumConnect_fb"></span></span>
+        <input type="range" id="maxNumConnect" min="0" max="50" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>连接距离: </span><span id="maxConnectDist_fb"></span></span>
+        <input type="range" id="maxConnectDist" min="5" max="1000" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>粗细: </span><span id="connectionLineWidth_fb"></span></span>
+        <input type="range" id="connectionLineWidth" min="0" max="10" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>透明度: </span><span id="connectionOpacity_fb"></span></span>
+        <input type="range" id="connectionOpacity" min="0" max="1" step="any">
+    </label>
+    <p><span class="controls-btn" id="connect">连接</span></p>
+</div>
+<div id="tail-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>长度: </span><span id="tailLength_fb"></span></span>
+        <input type="range" id="tailLength" min="5" max="50" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>最粗: </span><span id="maxTailWidth_fb"></span></span>
+        <input type="range" id="maxTailWidth" min="0" max="25" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>最细: </span><span id="minTailWidth_fb"></span></span>
+        <input type="range" id="minTailWidth" min="0" max="25" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>最高透明度: </span><span id="maxTailOpacity_fb"></span></span>
+        <input type="range" id="maxTailOpacity" min="0" max="1" step="any">
+    </label>
+    <p><span class="controls-btn" id="tailTranslucent">半透明</span></p>
+    <p><span class="controls-btn" id="tailVisible">显示尾巴</span></p>
+    <p><span class="controls-btn" id="headVisible">显示头</span></p>
+</div>
+<div id="graphics-controls" class="controls-block">
+    <p><span class="controls-btn" id="pixelDensity2">高像素模式</span></p>
+    <p><span class="controls-btn" id="roundedLineCap">锯齿修正</span></p>
+</div>
+<div id="force-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>逃避距离: </span><span id="avoidance_fb"></span></span>
+        <input type="range" id="avoidance" min="0.5" max="10" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>视野范围: </span><span id="scope_fb"></span></span>
+        <input type="range" id="scope" min="50" max="1000" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>最高加速度: </span><span id="maxAcc_fb"></span></span>
+        <input type="range" id="maxAcc" min="0" max="1" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>斥力: </span><span id="repel_fb"></span></span>
+        <input type="range" id="repel" min="1" max="7" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>阻力: </span><span id="resistance_fb"></span></span>
+        <input type="range" id="resistance" min="0.9" max="1" step="any">
+    </label>
+    <span class="controls-btn" id="gravitationalWrap">重力环绕模式</span>
+    <div id="gravitationalWrap-controls" class="controls-block">
+        <h3>启用／关闭重力环绕模式.</h3>
+        <p>在开启重力环绕模式之后，屏幕将会被当作一个被摊平了的球体一样来对待，屏幕左边的单位将会对屏幕右边的单位有引力作用。</p>
+    </div>
+</div>
+<div id="size-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>半径: </span><span id="radius_fb"></span></span>
+        <input type="range" id="radius" min="5" max="40" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>半径差异: </span><span id="radiusVariance_fb"></span></span>
+        <input type="range" id="radiusVariance" min="0" max="40" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>波幅: </span><span id="amp_fb"></span></span>
+        <input type="range" id="amp" min="0" max="10" step="Any">
+    </label>
+</div>
+<div id="style-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>轮廓粗细: </span><span id="strokeWeight_fb"></span></span>
+        <input type="range" id="strokeWeight" min="0" max="10" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>红色: </span><span id="red_fb"></span></span>
+        <input type="range" id="red" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>绿色: </span><span id="green_fb"></span></span>
+        <input type="range" id="green" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>蓝色: </span><span id="blue_fb"></span></span>
+        <input type="range" id="blue" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>透明度: </span><span id="alpha_fb"></span></span>
+        <input type="range" id="alpha" min="0" max="1" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>最低亮度: </span><span id="minBrightness_fb"></span></span>
+        <input type="range" id="minBrightness" min="0" max="255" step="1">
+    </label>
+    <p><span class="controls-btn" id="background">实心圆</span></p>
+    <p><span class="controls-btn" id="randomColor">随机分配颜色</span></p>
+    <p><span class="controls-btn" id="reptile">爬虫</span></p>
+    <h3 id="background-controls" class="controls-block">点击以去掉／添加背景至每一个单位</h3>
+    <h3 id="randomColor-controls" class="controls-block">点击以启用／废止随机化颜色分配</h3>
+</div>
+
+</body>
+<script type="text/javascript" src="../assets/scripts/main.js"></script>
+<script type="text/javascript" src="../assets/scripts/validate-zh.js"></script>
+<script type="text/javascript" src="../assets/scripts/transcribe.js"></script>
+</html>

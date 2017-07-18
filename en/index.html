@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flock Animation by Jiachen Ren</title>
+    <link rel="stylesheet" href="../assets/css/site.css">
+    <link rel="stylesheet" href="../assets/css/components/sliders.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/scripts/droid.js"></script>
+    <script type="text/javascript" src="/dev/libs/vec2d.js"></script>
+    <script type="text/javascript" src="/dev/libs/utils.js"></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<h1>Welcome to Flock Animation designed by Jiachen Ren using Web Canvas</h1>
+<h2>
+    <span id="show_controls" class="show">Controls</span>
+    <span id="hide_controls" class="hide">Hide Controls</span>
+    <span id="show_additional" class="show">Additional Features</span>
+    <span id="hide_additional" class="hide">Back</span>
+    <span id="show_actions" class="show">Actions</span>
+    <span id="hide_actions" class="hide">Hide Actions</span>
+    <span id="controls" class="controls">
+        <button id="force" class="btn">Force</button>
+        <button id="size" class="btn">Size</button>
+        <button id="style" class="btn">Style</button>
+    </span>
+    <span id="additional" class="controls">
+        <button id="tail" class="btn">Tail</button>
+        <button id="connection" class="btn">Connection</button>
+        <button id="graphics" class="btn">Graphics</button>
+    </span>
+    <span id="actions" class="controls">
+        <button id="simulation" class="btn">Simulation</button>
+        <!--TODO: implement with php requests-->
+        <button id="presets" class="btn">Presets</button>
+    </span>
+</h2>
+<div id="presets-controls" class="controls-block">
+    <hr>
+    <label for="preset_entry"><span class="controls-label">Load Preset: </span></label><br>
+    <input type="text" id="preset_entry" placeholder="search here" required>
+    <br>
+    <span class="controls-label">Suggestions: </span>
+    <div id="suggestions"></div>
+    <br>
+    <hr>
+    <label for="name"><span class="controls-label">Save Preset: </span></label><br>
+    <input type="text" id="name" placeholder="file name" required><br>
+    <span class="controls-label">Status: </span><span id="sql_fb">not saved</span>
+</div>
+<div id="simulation-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Number of Units: </span><span id="numDroids_fb"></span></span>
+        <input type="range" id="numDroids" min="0" max="300" step="1">
+    </label>
+    <p><span class="controls-action" id="clear">Clear Screen</span></p>
+    <p><span class="controls-action" id="re_spawn">Re-spawn</span></p>
+</div>
+<div id="connection-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Number: </span><span id="maxNumConnect_fb"></span></span>
+        <input type="range" id="maxNumConnect" min="0" max="50" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>Distance: </span><span id="maxConnectDist_fb"></span></span>
+        <input type="range" id="maxConnectDist" min="5" max="1000" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>Line Width: </span><span id="connectionLineWidth_fb"></span></span>
+        <input type="range" id="connectionLineWidth" min="0" max="10" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Opacity: </span><span id="connectionOpacity_fb"></span></span>
+        <input type="range" id="connectionOpacity" min="0" max="1" step="any">
+    </label>
+    <p><span class="controls-btn" id="connect">Connect</span></p>
+</div>
+<div id="tail-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Length: </span><span id="tailLength_fb"></span></span>
+        <input type="range" id="tailLength" min="5" max="50" step="1">
+    </label>
+    <label>
+        <span class="controls-label"><span>Max Width: </span><span id="maxTailWidth_fb"></span></span>
+        <input type="range" id="maxTailWidth" min="0" max="25" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Min Width: </span><span id="minTailWidth_fb"></span></span>
+        <input type="range" id="minTailWidth" min="0" max="25" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Max Opacity: </span><span id="maxTailOpacity_fb"></span></span>
+        <input type="range" id="maxTailOpacity" min="0" max="1" step="any">
+    </label>
+    <p><span class="controls-btn" id="tailTranslucent">Tail Translucent</span></p>
+    <p><span class="controls-btn" id="tailVisible">Tail Visible</span></p>
+    <p><span class="controls-btn" id="headVisible">Head Visible</span></p>
+</div>
+<div id="graphics-controls" class="controls-block">
+    <p><span class="controls-btn" id="pixelDensity2">High Pixel Density</span></p>
+    <p><span class="controls-btn" id="roundedLineCap">Rounded Line Cap</span></p>
+</div>
+<div id="force-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Avoidance: </span><span id="avoidance_fb"></span></span>
+        <input type="range" id="avoidance" min="0.5" max="10" step="any">
+    </label>
+    <br>
+    <label>
+        <span class="controls-label"><span>Scope: </span><span id="scope_fb"></span></span>
+        <input type="range" id="scope" min="50" max="1000" step="any">
+    </label>
+    <br>
+    <label>
+        <span class="controls-label"><span>Max Acceleration: </span><span id="maxAcc_fb"></span></span>
+        <input type="range" id="maxAcc" min="0" max="1" step="any">
+    </label>
+    <br>
+    <label>
+        <span class="controls-label"><span>Repel: </span><span id="repel_fb"></span></span>
+        <input type="range" id="repel" min="1" max="7" step="any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Resistance: </span><span id="resistance_fb"></span></span>
+        <input type="range" id="resistance" min="0.9" max="1" step="any">
+    </label>
+    <span class="controls-btn" id="gravitationalWrap">Gravitational Wrap</span>
+    <div id="gravitationalWrap-controls" class="controls-block">
+        <h3>Click to toggle gravitational wrap (original idea by Jiachen Ren).</h3>
+        <p>If this is on, then the gravitational force of each of the bubbles will wrap around the edges of the
+            screen and attract bubbles at the other end. In this case, the screen could be considered as a globe turned
+            flat.</p>
+    </div>
+</div>
+<div id="size-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Radius: </span><span id="radius_fb"></span></span>
+        <input type="range" id="radius" min="5" max="40" step="Any">
+    </label>
+    <br>
+    <label>
+        <span class="controls-label"><span>Radius Variance: </span><span id="radiusVariance_fb"></span></span>
+        <input type="range" id="radiusVariance" min="0" max="40" step="Any">
+    </label>
+    <br>
+    <label>
+        <span class="controls-label"><span>Fluctuation Amplitude: </span><span id="amp_fb"></span></span>
+        <input type="range" id="amp" min="0" max="10" step="Any">
+    </label>
+    <br>
+</div>
+<div id="style-controls" class="controls-block">
+    <label>
+        <span class="controls-label"><span>Contour Thickness: </span><span id="strokeWeight_fb"></span></span>
+        <input type="range" id="strokeWeight" min="0" max="10" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Red: </span><span id="red_fb"></span></span>
+        <input type="range" id="red" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Green: </span><span id="green_fb"></span></span>
+        <input type="range" id="green" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Blue: </span><span id="blue_fb"></span></span>
+        <input type="range" id="blue" min="0" max="255" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Alpha: </span><span id="alpha_fb"></span></span>
+        <input type="range" id="alpha" min="0" max="1" step="Any">
+    </label>
+    <label>
+        <span class="controls-label"><span>Min Brightness: </span><span id="minBrightness_fb"></span></span>
+        <input type="range" id="minBrightness" min="0" max="255" step="1">
+    </label>
+    <p><span class="controls-btn" id="background">Background</span></p>
+    <p><span class="controls-btn" id="randomColor">Random Color</span></p>
+    <p><span class="controls-btn" id="reptile">Reptile</span></p>
+    <h3 id="background-controls" class="controls-block">Click to toggle the background of the bubbles.</h3>
+    <h3 id="randomColor-controls" class="controls-block">Click to toggle the random color for each individual
+        bubbles.</h3>
+</div>
+
+</body>
+<script type="text/javascript" src="../assets/scripts/main.js"></script>
+<script type="text/javascript" src="../assets/scripts/validate-en.js"></script>
+<script type="text/javascript" src="../assets/scripts/transcribe.js"></script>
+</html>

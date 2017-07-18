@@ -1,0 +1,166 @@
+/*noinspection CssUnknownTarget*/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
+@import "components/text-inputs.css";
+
+body {
+    font-family: "Open Sans", sans-serif;
+    background-color: hsl(208, 100%, 97%);
+
+    /*make the texts not selectable*/
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+a {
+    text-decoration: none;
+    color: rgba(12, 81, 69, 0.1);
+    transition: color 1s;
+    margin-left: 10px;
+}
+
+a:hover, a:active {
+    color: rgba(75, 43, 252, 0.59);
+}
+
+h1 {
+    position: relative;
+    color: #1FE8CC;
+    animation-name: title;
+    animation-duration: 2s;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.controls-block {
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    /*text-align: center;*/
+}
+
+.controls-label, .controls-btn, .controls-action {
+    border-radius: 5px;
+    padding: 5px;
+    font-variant: small-caps;
+}
+
+.controls-label {
+    /*background-color: rgba(75, 43, 252, 0.40);*/
+}
+
+.controls-btn {
+    background-color: rgba(52, 217, 176, 0.33);
+}
+
+.controls-btn:hover {
+    background-color: rgba(21, 255, 73, 0.66);
+    cursor: pointer;
+}
+
+.controls-action {
+    background-color: rgba(75, 43, 252, 0.59);
+}
+
+.controls-action:hover {
+    background-color: rgba(170, 121, 252, 0.59);
+    cursor: pointer;
+}
+
+.controls {
+    position: relative;
+    display: none;
+}
+
+.btn {
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+    border: none;
+    color: #ffffff;
+    transition: background 1s;
+    vertical-align: middle;
+    background: rgba(52, 217, 176, 0.67);
+    padding: 2px 60pt;
+    font-size: large;
+    margin-left: 20pt;
+    margin-right: 20pt;
+    text-decoration: none;
+}
+
+.btn::selection, button:focus {
+    outline: none;
+}
+
+.btn:hover {
+    background: #3cb0fd;
+    text-decoration: none;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.show {
+    position: relative;
+    transition: color 1s;
+    color: #68B9FF;
+    animation-name: show-controls;
+    animation-duration: 2.5s;
+    /*animation-delay: 2s;*/
+    animation-timing-function: ease;
+    margin-left: 20pt;
+}
+
+.hide {
+    color: #68B9FF;
+}
+
+.show:hover, .hide:hover {
+    cursor: pointer;
+    color: rgba(75, 43, 252, 0.59);
+}
+
+@keyframes title {
+    0% {
+        color: #15FF49;
+        left: -500px;
+        animation-timing-function: ease-out;
+    }
+    25% {
+        color: #68B9FF;
+        left: 25%;
+    }
+    100% {
+        /*color: #86E81F;*/
+        left: 0;
+    }
+}
+
+@keyframes show-controls {
+    0% {
+        left: 100%;
+    }
+    20% {
+        left: -25%;
+    }
+    80% {
+        left: 0;
+        color: #68B9FF;
+    }
+    85% {
+        color: rgba(255, 236, 34, 1);
+    }
+    90% {
+        color: #68B9FF;
+    }
+    95% {
+        color: rgba(255, 236, 34, 1);
+    }
+}
