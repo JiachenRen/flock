@@ -102,7 +102,7 @@ function processJSON(name) {
     }
 
     //update EVERYTHING!
-    resizeCanvas();
+    renew();
     syncAll();
     spawn(numDroids);
 }

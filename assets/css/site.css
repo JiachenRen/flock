@@ -164,3 +164,15 @@ h1, h2 {
         color: rgba(255, 236, 34, 1);
     }
 }
+
+@media (max-height: 400px) {
+    h1, h2 {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    h1, h2 {
+        display: none;
+    }
+}
